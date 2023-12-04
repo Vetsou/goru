@@ -7,11 +7,11 @@ Supports the following sites:
 - Gelbooru
 
 ## Usage
-```ps
+```
 go run main.go -site <SITE_NAME (safebooru|gelbooru|danbooru)> -id <PICTURE_ID>
 ```
 
 ## Example:
-```ps
+```
 go run main.go -site safebooru -id 4634700
 ```
