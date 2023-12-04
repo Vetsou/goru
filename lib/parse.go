@@ -1,8 +1,7 @@
-package goru
+package lib
 
 import (
 	"errors"
-	"flag"
 	"strings"
 )
 
@@ -14,11 +13,4 @@ func ParseBooruTags(tagsStr string) ([]string, error) {
 		return tags, nil
 	}
 	return nil, errors.New("no tags found")
-}
-
-func ParseInputFlags() int {
-	id := flag.Int("id", 0, "Image id")
-	flag.Parse()
-
-	return *id
 }
