@@ -1,5 +1,5 @@
 # Goru
-Simple web scrapper written in go to extract tags from booru sites.
+Simple web scraper written in Go to extract tags from booru sites.
 
 Supports the following sites:
 - Safebooru
