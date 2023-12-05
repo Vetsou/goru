@@ -4,27 +4,24 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Virees/goru/flags"
 	"github.com/Virees/goru/lib"
 )
 
 func main() {
-	flags, err := lib.ParseInputFlags()
+	flags, err := flags.ParseInputFlags()
 	if err != nil {
-		fmt.Println("Error parsing flags: ", err)
+		fmt.Println("Error parsing flags:", err)
 		os.Exit(1)
 	}
 
 	tc := lib.NewTagsCollector()
 
-	url, err := flags.GetUrl()
-	if err != nil {
-		fmt.Println("Error generating URL: ", err)
-		os.Exit(1)
-	}
-
-	err = tc.Visit(url)
-	if err != nil {
-		fmt.Println("Error visiting the site: ", err)
-		os.Exit(1)
+	urls := flags.GetUrls()
+	for _, url := range urls {
+		tc.Visit(url)
+		if err != nil {
+			fmt.Printf("Error visiting the site: %v", err)
+		}
 	}
 }

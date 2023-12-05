@@ -8,10 +8,15 @@ Supports the following sites:
 
 ## Usage
 ```
-go run main.go -site <SITE_NAME (safebooru|gelbooru|danbooru)> -id <PICTURE_ID>
+go run main.go -site=<SITE_NAME> -ids=<ID>
 ```
 
 ## Example:
-```
-go run main.go -site safebooru -id 4634700
+```bash
+# Download tags from image with id=4 from safebooru
+go run main.go -site=safebooru -ids=4
+# Download tags from images with id=4, 22 and 6 from safebooru
+go run main.go -site=safebooru -ids=4,22,6
+# Download tags from images with id from 1 to 7 from safebooru
+go run main.go -site=safebooru -ids=1-7
 ```
