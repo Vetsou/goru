@@ -11,6 +11,19 @@ type Flags struct {
 	Id   int
 }
 
+func ParseInputFlags() (Flags, error) {
+	site := flag.String("site", "", "Source image site")
+	id := flag.Int("id", 0, "Source image id")
+	flag.Parse()
+
+	flags := Flags{
+		Site: *site,
+		Id:   *id,
+	}
+
+	return flags, nil
+}
+
 func (f *Flags) GetUrl() (string, error) {
 	var supportedSites = map[string]string{
 		"safebooru": "https://safebooru.org/index.php?page=post&s=view&id=%d",
@@ -24,17 +37,4 @@ func (f *Flags) GetUrl() (string, error) {
 	}
 
 	return fmt.Sprintf(urlTemplate, f.Id), nil
-}
-
-func ParseInputFlags() Flags {
-	site := flag.String("site", "", "Source image site")
-	id := flag.Int("id", 0, "Source image id")
-	flag.Parse()
-
-	flags := Flags{
-		Site: *site,
-		Id:   *id,
-	}
-
-	return flags
 }
