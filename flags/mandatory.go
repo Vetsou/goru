@@ -9,8 +9,11 @@ import (
 
 // Map structure that contains URL templates for supported sites
 var SUPPORTED_SITES = map[string]string{
+	"safe":      "https://safebooru.org/index.php?page=post&s=view&id=%d",
 	"safebooru": "https://safebooru.org/index.php?page=post&s=view&id=%d",
+	"dan":       "https://danbooru.donmai.us/posts/%d",
 	"danbooru":  "https://danbooru.donmai.us/posts/%d",
+	"gel":       "https://gelbooru.com/index.php?page=post&s=view&id=%d",
 	"gelbooru":  "https://gelbooru.com/index.php?page=post&s=view&id=%d",
 }
 
