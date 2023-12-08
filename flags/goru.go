@@ -19,11 +19,11 @@ func ParseInputFlags() (*GoruFlags, error) {
 	flag.Parse()
 
 	if err := site.Set(*siteFlag); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("set site flag failed: %w", err)
 	}
 
 	if err := idList.Set(*idsFlag); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("set ids flag failed: %w", err)
 	}
 
 	gf := &GoruFlags{

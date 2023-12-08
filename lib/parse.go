@@ -42,13 +42,12 @@ func (tc *TagsCollector) Visit(url string) error {
 }
 
 func setupOnHTML(c *colly.Collector) {
-	// Safebooru
+	handleTags := func(htmlTags *colly.HTMLElement) {
+		tags := strings.Fields(htmlTags.Text)
+		fmt.Printf("%s\n", tags)
+	}
+
 	c.OnHTML(SAFEBOORU_TAGS_LOCATION, handleTags)
 	c.OnHTML(DANBOORU_TAGS_LOCATION, handleTags)
 	c.OnHTML(GELBOORU_TAGS_LOCATION, handleTags)
-}
-
-func handleTags(htmlTags *colly.HTMLElement) {
-	tags := strings.Fields(htmlTags.Text)
-	fmt.Printf("%s\n", tags)
 }

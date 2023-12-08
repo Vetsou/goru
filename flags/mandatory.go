@@ -22,11 +22,11 @@ func (ids *IDList) String() string {
 }
 
 func (idList *IDList) Set(value string) error {
-	idStrings := strings.Split(value, ",")
-
-	if len(idStrings) == 0 {
-		return fmt.Errorf("flag ids: is empty")
+	if value == "" {
+		return errors.New("mandatory flag is empty")
 	}
+
+	idStrings := strings.Split(value, ",")
 
 	for _, idStr := range idStrings {
 		// Parse range list (e.g. 1-23)
@@ -41,7 +41,7 @@ func (idList *IDList) Set(value string) error {
 
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			return fmt.Errorf("flag ids: error parsing id: %v", err)
+			return fmt.Errorf("error parsing id: %v", err)
 		}
 		*idList = append(*idList, id)
 	}
@@ -84,7 +84,7 @@ func (srcSite *SourceSite) String() string {
 
 func (srcSite *SourceSite) Set(value string) error {
 	if value == "" {
-		return errors.New("sourceSite flag is empty")
+		return errors.New("flag is empty")
 	}
 
 	urlTemplate, ok := SUPPORTED_SITES[value]
