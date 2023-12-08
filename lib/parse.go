@@ -8,6 +8,12 @@ import (
 	"github.com/gocolly/colly/v2"
 )
 
+const (
+	SAFEBOORU_TAGS_LOCATION = "#tag-sidebar > .tag > a"
+	DANBOORU_TAGS_LOCATION  = "section#tag-list .search-tag"
+	GELBOORU_TAGS_LOCATION  = "ul#tag-list > li[class^='tag-type'] > a"
+)
+
 // Wrapper for the Colly collector, designed for extracting tags
 type TagsCollector struct {
 	handle *colly.Collector
@@ -37,27 +43,12 @@ func (tc *TagsCollector) Visit(url string) error {
 
 func setupOnHTML(c *colly.Collector) {
 	// Safebooru
-	c.OnHTML("ul#tag-sidebar", func(e *colly.HTMLElement) {
-		fmt.Printf("%s\n", parseTags(e.Text))
-	})
-
-	// Danbooru
-	c.OnHTML("section#tag-list", func(e *colly.HTMLElement) {
-		fmt.Printf("%s\n", parseTags(e.Text))
-	})
-
-	// Gelbooru
-	c.OnHTML("ul#tag-list", func(e *colly.HTMLElement) {
-		fmt.Printf("%s\n", parseTags(e.Text))
-	})
+	c.OnHTML(SAFEBOORU_TAGS_LOCATION, handleTags)
+	c.OnHTML(DANBOORU_TAGS_LOCATION, handleTags)
+	c.OnHTML(GELBOORU_TAGS_LOCATION, handleTags)
 }
 
-// Parse tags
-func parseTags(tagsStr string) []string {
-	tags := strings.Fields(tagsStr)
-
-	if len(tags) > 0 {
-		tags = tags[:len(tags)-1]
-	}
-	return tags
+func handleTags(htmlTags *colly.HTMLElement) {
+	tags := strings.Fields(htmlTags.Text)
+	fmt.Printf("%s\n", tags)
 }
