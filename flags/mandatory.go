@@ -17,6 +17,34 @@ var SUPPORTED_SITES = map[string]string{
 	"gelbooru":  "https://gelbooru.com/index.php?page=post&s=view&id=%d",
 }
 
+// Function parsing id range (e.g. 1-2, 3-21, 700-233)
+func parseRange(idStr string, idList *IDList) error {
+	rangeParts := strings.Split(idStr, "-")
+	if len(rangeParts) != 2 {
+		return fmt.Errorf("invalid id range format: %s", idStr)
+	}
+
+	fromId, err := strconv.Atoi(rangeParts[0])
+	if err != nil {
+		return fmt.Errorf("error parsing range value: %v", err)
+	}
+
+	toId, err := strconv.Atoi(rangeParts[1])
+	if err != nil {
+		return fmt.Errorf("error parsing range value: %v", err)
+	}
+
+	if fromId > toId {
+		fromId, toId = toId, fromId
+	}
+
+	for i := fromId; i <= toId; i++ {
+		*idList = append(*idList, i)
+	}
+
+	return nil
+}
+
 // Flag representing the list of image IDs
 type IDList []int
 
@@ -47,29 +75,6 @@ func (idList *IDList) Set(value string) error {
 			return fmt.Errorf("error parsing id: %v", err)
 		}
 		*idList = append(*idList, id)
-	}
-
-	return nil
-}
-
-func parseRange(idStr string, idList *IDList) error {
-	rangeParts := strings.Split(idStr, "-")
-	if len(rangeParts) != 2 {
-		return fmt.Errorf("invalid id range format: %s", idStr)
-	}
-
-	fromId, err := strconv.Atoi(rangeParts[0])
-	if err != nil {
-		return fmt.Errorf("error parsing range value: %v", err)
-	}
-
-	toId, err := strconv.Atoi(rangeParts[1])
-	if err != nil {
-		return fmt.Errorf("error parsing range value: %v", err)
-	}
-
-	for i := fromId; i <= toId; i++ {
-		*idList = append(*idList, i)
 	}
 
 	return nil

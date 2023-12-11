@@ -20,7 +20,7 @@ func onResponse(res *colly.Response) {
 }
 
 func onError(res *colly.Response, e error) {
-	fmt.Printf("TagsCollector: %s entering site %s\n", e, res.Request.URL)
+	fmt.Printf("TagsCollector: %s entering site %s\n (%d)", e, res.Request.URL, res.StatusCode)
 }
 
 func setupTagsCollector() *colly.Collector {
