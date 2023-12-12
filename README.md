@@ -9,6 +9,15 @@ Supports the following sites:
 ## Usage
 ```bash
 go run main.go -site=<SITE> -ids=<ID> -type=<TAGS_TYPE>
+  - SITE - Source image site ["danbooru"|"dan"|"safebooru"|"safe"|"gelbooru"|"gel"]
+  - ID - Comma-separated list of image IDs ["2,4,5"|"1-22"|"13-7"|"6,8-12,22,44-55"]
+  - TAGS_TYPE - Comma-separated list of tag types to include ["a"|"cr"|"ch"|"ar"|"g"|"md"]
+    - a - All tags
+    - cr - Copyright tags
+    - ch - Character tags
+    - ar - Artist tags
+    - g - General tags
+    - md - Metadata tags
 ```
 
 ## Example:
