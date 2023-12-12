@@ -7,6 +7,9 @@ import (
 	"strings"
 )
 
+// Empty flag error
+var ErrEmptyFlag = errors.New("mandatory flag is empty")
+
 // Map structure that contains URL templates for supported sites
 var SUPPORTED_SITES = map[string]string{
 	"safe":      "https://safebooru.org/index.php?page=post&s=view&id=%d",
@@ -17,7 +20,7 @@ var SUPPORTED_SITES = map[string]string{
 	"gelbooru":  "https://gelbooru.com/index.php?page=post&s=view&id=%d",
 }
 
-// Function parsing id range (e.g. 1-2, 3-21, 700-233)
+// Function parsing id range (e.g. 1-2, 3-21, 70-23)
 func parseRange(idStr string, idList *IDList) error {
 	rangeParts := strings.Split(idStr, "-")
 	if len(rangeParts) != 2 {
@@ -48,13 +51,13 @@ func parseRange(idStr string, idList *IDList) error {
 // Flag representing the list of image IDs
 type IDList []int
 
-func (ids *IDList) String() string {
-	return fmt.Sprintf("%v", *ids)
+func (idList *IDList) String() string {
+	return fmt.Sprintf("%v", *idList)
 }
 
 func (idList *IDList) Set(value string) error {
 	if value == "" {
-		return errors.New("mandatory flag is empty")
+		return ErrEmptyFlag
 	}
 
 	idStrings := strings.Split(value, ",")
@@ -66,7 +69,6 @@ func (idList *IDList) Set(value string) error {
 			if err != nil {
 				return err
 			}
-
 			continue
 		}
 
@@ -92,7 +94,7 @@ func (srcSite *SourceSite) String() string {
 
 func (srcSite *SourceSite) Set(value string) error {
 	if value == "" {
-		return errors.New("flag is empty")
+		return ErrEmptyFlag
 	}
 
 	urlTemplate, ok := SUPPORTED_SITES[value]

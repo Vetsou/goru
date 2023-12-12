@@ -8,7 +8,7 @@ Supports the following sites:
 
 ## Usage
 ```bash
-go run main.go -site=<SITE> -ids=<ID>
+go run main.go -site=<SITE> -ids=<ID> -type=<TAGS_TYPE>
 ```
 
 ## Example:
@@ -19,4 +19,6 @@ go run main.go -site=safebooru -ids=4
 go run main.go -site=danbooru -ids="4,22,6"
 # Download tags from images with id from 1 to 7 from safebooru
 go run main.go -site=safe -ids="1-7"
+# Download General and Artist tags from images with id from 1 to 4 and 9 from danbooru
+go run main.go -site=dan -ids="1-4,9" -type="ar,g"
 ```

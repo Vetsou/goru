@@ -6,18 +6,23 @@ import (
 )
 
 type GoruFlags struct {
-	Site   SourceSite
-	IdList IDList
+	Site         SourceSite
+	IdList       IDList
+	TagsTypeList TagsType
 }
 
-func ParseInputFlags() (*GoruFlags, error) {
+func LoadInputFlags() (*GoruFlags, error) {
 	var site SourceSite
 	var idList IDList
+	var tagsTypeList TagsType
 
-	siteFlag := flag.String("site", "", "Source image site")
-	idsFlag := flag.String("ids", "", "Comma-separated list of IDs")
+	// Read mandatory input flags
+	siteFlag := flag.String("site", "", "Source image site (e.g., safebooru, safe)")
+	idsFlag := flag.String("ids", "", "Comma-separated list of image IDs")
+	tagTypes := flag.String("type", "", "Comma-separated list of tag types to include (e.g., all, copyright, character)")
 	flag.Parse()
 
+	// Parse mandatory flags
 	if err := site.Set(*siteFlag); err != nil {
 		return nil, fmt.Errorf("set site flag failed: %w", err)
 	}
@@ -26,12 +31,20 @@ func ParseInputFlags() (*GoruFlags, error) {
 		return nil, fmt.Errorf("set ids flag failed: %w", err)
 	}
 
-	gf := &GoruFlags{
-		Site:   site,
-		IdList: idList,
+	// Parse optional flags
+	if *tagTypes != "" {
+		if err := tagsTypeList.Set(*tagTypes); err != nil {
+			return nil, fmt.Errorf("set tags type flag failed: %w", err)
+		}
+	} else {
+		tagsTypeList.Set("a")
 	}
 
-	return gf, nil
+	return &GoruFlags{
+		Site:         site,
+		IdList:       idList,
+		TagsTypeList: tagsTypeList,
+	}, nil
 }
 
 func (gflags *GoruFlags) GetUrls() []string {
