@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Virees/goru/flags"
+	"github.com/fatih/color"
 	"github.com/gocolly/colly/v2"
 )
 
@@ -47,7 +48,7 @@ func setupOnDanbooruTags(tagsToDownload flags.TagsType) func(*colly.HTMLElement)
 			return
 		}
 
-		fmt.Printf("%s, ", strings.Join(extractedTags, ", "))
+		fmt.Printf(color.GreenString("%s"), strings.Join(extractedTags, ", "))
 	}
 }
 
@@ -65,7 +66,7 @@ func setupOnSafebooruTags(tagsToDownload flags.TagsType) func(*colly.HTMLElement
 			return
 		}
 
-		fmt.Printf("%s, ", strings.Join(extractedTags, ", "))
+		fmt.Printf(color.GreenString("%s"), strings.Join(extractedTags, ", "))
 	}
 }
 
@@ -83,17 +84,17 @@ func setupOnGelbooruTags(tagsToDownload flags.TagsType) func(*colly.HTMLElement)
 			return
 		}
 
-		fmt.Printf("%s, ", strings.Join(extractedTags, ", "))
+		fmt.Printf(color.GreenString("%s"), strings.Join(extractedTags, ", "))
 	}
 }
 
 // Response handles
 func onResponse(res *colly.Response) {
-	fmt.Printf("Got a response from: %s\n", res.Request.URL)
+	fmt.Printf(color.YellowString("\n\nGot a response from: %s\n"), res.Request.URL)
 }
 
 func onError(res *colly.Response, e error) {
-	fmt.Printf("TagsCollector: %s entering site %s\n (%d)", e, res.Request.URL, res.StatusCode)
+	fmt.Printf(color.RedString("\n\nTagsCollector: %s entering site %s (Code: %d)"), e, res.Request.URL, res.StatusCode)
 }
 
 func onScraped(res *colly.Response) {
