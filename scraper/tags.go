@@ -36,15 +36,9 @@ func SetupTagsCollector(flags flags.GoruFlags) *colly.Collector {
 // Html handles
 func setupOnDanbooruTags(tagsToDownload flags.TagsType) func(*colly.HTMLElement) {
 	return func(e *colly.HTMLElement) {
-		var extractedTags []string
-
-		for _, tagToDownload := range tagsToDownload {
-			foundTags := e.ChildTexts(DAN_TAGS_LOCATION[tagToDownload])
-			extractedTags = append(extractedTags, foundTags...)
-		}
-
-		if len(extractedTags) == 0 {
-			fmt.Println("No tags found")
+		extractedTags, err := ParseTags(DAN_TAGS_LOCATION, tagsToDownload, e)
+		if err != nil {
+			fmt.Printf(color.YellowString("Parse tags error: %s"), err)
 			return
 		}
 
@@ -54,15 +48,9 @@ func setupOnDanbooruTags(tagsToDownload flags.TagsType) func(*colly.HTMLElement)
 
 func setupOnSafebooruTags(tagsToDownload flags.TagsType) func(*colly.HTMLElement) {
 	return func(e *colly.HTMLElement) {
-		var extractedTags []string
-
-		for _, tagToDownload := range tagsToDownload {
-			foundTags := e.ChildTexts(SAFE_TAGS_LOCATION[tagToDownload])
-			extractedTags = append(extractedTags, foundTags...)
-		}
-
-		if len(extractedTags) == 0 {
-			fmt.Println("No tags found")
+		extractedTags, err := ParseTags(SAFE_TAGS_LOCATION, tagsToDownload, e)
+		if err != nil {
+			fmt.Printf(color.YellowString("Parse tags error: %s"), err)
 			return
 		}
 
@@ -72,15 +60,9 @@ func setupOnSafebooruTags(tagsToDownload flags.TagsType) func(*colly.HTMLElement
 
 func setupOnGelbooruTags(tagsToDownload flags.TagsType) func(*colly.HTMLElement) {
 	return func(e *colly.HTMLElement) {
-		var extractedTags []string
-
-		for _, tagToDownload := range tagsToDownload {
-			foundTags := e.ChildTexts(GEL_TAGS_LOCATION[tagToDownload])
-			extractedTags = append(extractedTags, foundTags...)
-		}
-
-		if len(extractedTags) == 0 {
-			fmt.Println("No tags found")
+		extractedTags, err := ParseTags(GEL_TAGS_LOCATION, tagsToDownload, e)
+		if err != nil {
+			fmt.Printf(color.YellowString("Parse tags error: %s"), err)
 			return
 		}
 
@@ -90,11 +72,11 @@ func setupOnGelbooruTags(tagsToDownload flags.TagsType) func(*colly.HTMLElement)
 
 // Response handles
 func onResponse(res *colly.Response) {
-	fmt.Printf(color.YellowString("\n\nGot a response from: %s\n"), res.Request.URL)
+	fmt.Printf(color.WhiteString("\n\nGot a response from: %s\n"), res.Request.URL)
 }
 
 func onError(res *colly.Response, e error) {
-	fmt.Printf(color.RedString("\n\nTagsCollector: %s entering site %s (Code: %d)"), e, res.Request.URL, res.StatusCode)
+	fmt.Printf(color.RedString("\n\nTagsCollector: %s entering site %s (HTTP Code: %d)"), e, res.Request.URL, res.StatusCode)
 }
 
 func onScraped(res *colly.Response) {
