@@ -2,6 +2,8 @@ package scraper
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
 
 	"github.com/Virees/goru/flags"
 	"github.com/gocolly/colly/v2"
@@ -20,4 +22,15 @@ func ParseTags(tagsLocation map[string]string, requestedTags flags.TagsType, roo
 	}
 
 	return extractedTags, nil
+}
+
+func CreateFile(folderPath string, id string) (*os.File, error) {
+	outFilePath := filepath.Join(folderPath, id+".txt")
+
+	file, err := os.Create(outFilePath)
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
 }

@@ -9,17 +9,22 @@ type GoruFlags struct {
 	Site         SourceSite
 	IdList       IDList
 	TagsTypeList TagsType
+	OutputFolder OutputPath
 }
 
 func LoadInputFlags() (*GoruFlags, error) {
 	var site SourceSite
 	var idList IDList
 	var tagsTypeList TagsType
+	var outputLocation OutputPath
 
 	// Read mandatory input flags
 	siteFlag := flag.String("site", "", "Source image site (e.g., safebooru, safe)")
 	idsFlag := flag.String("ids", "", "Comma-separated list of image IDs")
-	tagTypes := flag.String("type", "", "Comma-separated list of tag types to include (e.g., all, copyright, character)")
+
+	// Read optional input flags
+	tagTypesFlag := flag.String("type", "", "Comma-separated list of tag types to include (e.g., all, copyright, character)")
+	outFolderFlag := flag.String("out", "", "Path to the folder where image tags will be saved")
 	flag.Parse()
 
 	// Parse mandatory flags
@@ -32,18 +37,26 @@ func LoadInputFlags() (*GoruFlags, error) {
 	}
 
 	// Parse optional flags
-	if *tagTypes != "" {
-		if err := tagsTypeList.Set(*tagTypes); err != nil {
+	if *tagTypesFlag != "" {
+		if err := tagsTypeList.Set(*tagTypesFlag); err != nil {
 			return nil, fmt.Errorf("set tags type flag failed: %w", err)
 		}
 	} else {
+		// If no tag types selected. Select all tags
 		tagsTypeList.Set("a")
+	}
+
+	if *outFolderFlag != "" {
+		if err := outputLocation.Set(*outFolderFlag); err != nil {
+			return nil, fmt.Errorf("set out flag failed: %w", err)
+		}
 	}
 
 	return &GoruFlags{
 		Site:         site,
 		IdList:       idList,
 		TagsTypeList: tagsTypeList,
+		OutputFolder: outputLocation,
 	}, nil
 }
 

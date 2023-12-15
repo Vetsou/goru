@@ -8,7 +8,7 @@ import (
 )
 
 // Empty flag error
-var ErrEmptyFlag = errors.New("mandatory flag is empty")
+var errEmptyFlag = errors.New("mandatory flag is empty")
 
 // Map structure that contains URL templates for supported sites
 var SUPPORTED_SITES = map[string]string{
@@ -57,7 +57,7 @@ func (idList *IDList) String() string {
 
 func (idList *IDList) Set(value string) error {
 	if value == "" {
-		return ErrEmptyFlag
+		return errEmptyFlag
 	}
 
 	idStrings := strings.Split(value, ",")
@@ -94,7 +94,7 @@ func (srcSite *SourceSite) String() string {
 
 func (srcSite *SourceSite) Set(value string) error {
 	if value == "" {
-		return ErrEmptyFlag
+		return errEmptyFlag
 	}
 
 	urlTemplate, ok := SUPPORTED_SITES[value]

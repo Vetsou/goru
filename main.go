@@ -6,6 +6,7 @@ import (
 
 	"github.com/Virees/goru/flags"
 	"github.com/Virees/goru/scraper"
+	"github.com/gocolly/colly/v2"
 )
 
 func main() {
@@ -17,9 +18,13 @@ func main() {
 
 	tagsColly := scraper.SetupTagsCollector(*inputFlags)
 
+	// Colly request context
+	ctx := colly.NewContext()
+	ctx.Put("outFolder", string(inputFlags.OutputFolder))
+
 	urls := inputFlags.GetUrls()
 	for _, url := range urls {
-		tagsColly.Visit(url)
+		tagsColly.Request("GET", url, nil, ctx, nil)
 		if err != nil {
 			fmt.Printf("Error visiting the site: %v\n", err)
 		}

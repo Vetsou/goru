@@ -3,6 +3,8 @@ package flags
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -39,5 +41,29 @@ func (t *TagsType) Set(value string) error {
 	}
 
 	*t = tagTypes
+	return nil
+}
+
+// Flag representing the path to the folder where image tags will be saved
+type OutputPath string
+
+func (p *OutputPath) String() string {
+	return fmt.Sprintf("%v", *p)
+}
+
+func (p *OutputPath) Set(value string) error {
+	absPath, err := filepath.Abs(value)
+	if err != nil {
+		return fmt.Errorf("path invalid: %s", err)
+	}
+
+	_, err = os.Stat(absPath)
+	if os.IsNotExist(err) {
+		return fmt.Errorf("path does not exist: %s", absPath)
+	} else if err != nil {
+		return fmt.Errorf("error checking path: %s", err)
+	}
+
+	*p = OutputPath(absPath)
 	return nil
 }
