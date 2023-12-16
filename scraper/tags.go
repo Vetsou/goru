@@ -37,6 +37,12 @@ func SetupTagsCollector(flags flags.GoruFlags) *colly.Collector {
 // Html handles
 func setupOnTags(tagsLocation map[string]string, tagsToDownload flags.TagsType) func(*colly.HTMLElement) {
 	return func(e *colly.HTMLElement) {
+		referer := e.Request.Headers.Values("Referer")
+		if len(referer) != 0 {
+			fmt.Printf(color.RedString("TagsCollector: Response URL is redirected or not found. Tags will not be downloaded for URL: %s\n"), referer[0])
+			return
+		}
+
 		// Get params
 		outFolder := string(e.Request.Ctx.Get("outFolder"))
 		reqId := strconv.Itoa(int(e.Request.ID))
@@ -63,7 +69,7 @@ func setupOnTags(tagsLocation map[string]string, tagsToDownload flags.TagsType) 
 
 // Response handles
 func onResponse(res *colly.Response) {
-	fmt.Printf(color.WhiteString("Got a response from: %s\n"), res.Request.URL)
+	fmt.Printf(color.GreenString("TagsCollector: Got a response from: %s (HTTP Code: %d)\n"), res.Request.URL, res.StatusCode)
 }
 
 func onError(res *colly.Response, e error) {
