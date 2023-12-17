@@ -38,7 +38,7 @@ func SetupTagsCollector(flags flags.GoruFlags) *colly.Collector {
 	return tagsColly
 }
 
-// Html handles
+// Html handler
 func setupOnTags(tagsLocation map[string]string, tagsToDownload flags.TagsType) func(*colly.HTMLElement) {
 	return func(e *colly.HTMLElement) {
 		if len(e.Request.Headers.Values("Referer")) != 0 {
@@ -60,7 +60,7 @@ func setupOnTags(tagsLocation map[string]string, tagsToDownload flags.TagsType) 
 		// Extract tags
 		extractedTags, err := ParseTags(tagsLocation, tagsToDownload, e)
 		if err != nil {
-			fmt.Printf(color.YellowString("Parse tags error: %s"), err)
+			fmt.Printf(color.YellowString("Parse tags error: %s\n"), err)
 			return
 		}
 
