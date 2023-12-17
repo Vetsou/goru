@@ -14,10 +14,14 @@ import (
 func SetupTagsCollector(flags flags.GoruFlags) *colly.Collector {
 	tagsColly := colly.NewCollector(
 		colly.AllowedDomains("safebooru.org", "danbooru.donmai.us", "gelbooru.com"),
+		colly.Async(true),
 	)
 
 	// Set config
 	tagsColly.SetRequestTimeout(30 * time.Second)
+	tagsColly.Limit(&colly.LimitRule{Parallelism: 4, DomainGlob: "*"})
+
+	// Handlers
 	tagsColly.OnResponse(onResponse)
 	tagsColly.OnError(onError)
 	tagsColly.OnScraped(onScraped)
@@ -37,9 +41,7 @@ func SetupTagsCollector(flags flags.GoruFlags) *colly.Collector {
 // Html handles
 func setupOnTags(tagsLocation map[string]string, tagsToDownload flags.TagsType) func(*colly.HTMLElement) {
 	return func(e *colly.HTMLElement) {
-		referer := e.Request.Headers.Values("Referer")
-		if len(referer) != 0 {
-			fmt.Printf(color.RedString("TagsCollector: Response URL is redirected or not found. Tags will not be downloaded for URL: %s\n"), referer[0])
+		if len(e.Request.Headers.Values("Referer")) != 0 {
 			return
 		}
 
@@ -69,6 +71,12 @@ func setupOnTags(tagsLocation map[string]string, tagsToDownload flags.TagsType) 
 
 // Response handles
 func onResponse(res *colly.Response) {
+	referer := res.Request.Headers.Values("Referer")
+	if len(referer) != 0 {
+		fmt.Printf(color.RedString("TagsCollector: Response URL is redirected or not found. Tags will not be downloaded for URL: %s\n"), referer[0])
+		return
+	}
+
 	fmt.Printf(color.GreenString("TagsCollector: Got a response from: %s (HTTP Code: %d)\n"), res.Request.URL, res.StatusCode)
 }
 

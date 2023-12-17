@@ -29,4 +29,6 @@ func main() {
 			fmt.Printf("Error visiting the site: %v\n", err)
 		}
 	}
+
+	tagsColly.Wait()
 }
