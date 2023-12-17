@@ -2,13 +2,13 @@ package scraper
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/Virees/goru/flags"
 	"github.com/fatih/color"
 	"github.com/gocolly/colly/v2"
+	"github.com/google/uuid"
 )
 
 func SetupTagsCollector(flags flags.GoruFlags) *colly.Collector {
@@ -45,12 +45,11 @@ func setupOnTags(tagsLocation map[string]string, tagsToDownload flags.TagsType) 
 			return
 		}
 
-		// Get params
-		outFolder := string(e.Request.Ctx.Get("outFolder"))
-		reqId := strconv.Itoa(int(e.Request.ID))
+		// Get output folder path
+		outDirPath := string(e.Request.Ctx.Get("outFolder"))
 
 		// Open/Create file
-		file, err := CreateFile(outFolder, reqId)
+		file, err := CreateFile(outDirPath, uuid.New().String())
 		if err != nil {
 			fmt.Printf(color.YellowString("File create error: %s"), err)
 			return
