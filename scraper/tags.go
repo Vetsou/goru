@@ -1,11 +1,14 @@
 package scraper
 
 import (
+	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
-	"github.com/Virees/goru/flags"
+	"github.com/Vetsou/goru/flags"
 	"github.com/fatih/color"
 	"github.com/gocolly/colly/v2"
 	"github.com/google/uuid"
@@ -39,7 +42,7 @@ func SetupTagsCollector(flags flags.GoruFlags) *colly.Collector {
 }
 
 // Html handler
-func setupOnTags(tagsLocation map[string]string, tagsToDownload flags.TagsType) func(*colly.HTMLElement) {
+func setupOnTags(tagsLocation map[string]string, reqTagTypes flags.TagsType) func(*colly.HTMLElement) {
 	return func(e *colly.HTMLElement) {
 		if len(e.Request.Headers.Values("Referer")) != 0 {
 			return
@@ -48,20 +51,20 @@ func setupOnTags(tagsLocation map[string]string, tagsToDownload flags.TagsType) 
 		// Get output folder path
 		outDirPath := string(e.Request.Ctx.Get("outFolder"))
 
+		// Extract tags
+		extractedTags, err := parseTags(tagsLocation, reqTagTypes, e)
+		if err != nil {
+			fmt.Printf(color.YellowString("Parse tags error: %s\n"), err)
+			return
+		}
+
 		// Open/Create file
-		file, err := CreateFile(outDirPath, uuid.New().String())
+		file, err := createTagsFile(outDirPath, uuid.New().String())
 		if err != nil {
 			fmt.Printf(color.YellowString("File create error: %s"), err)
 			return
 		}
 		defer file.Close()
-
-		// Extract tags
-		extractedTags, err := ParseTags(tagsLocation, tagsToDownload, e)
-		if err != nil {
-			fmt.Printf(color.YellowString("Parse tags error: %s\n"), err)
-			return
-		}
 
 		// Save tags to file
 		file.WriteString(strings.Join(extractedTags, ", "))
@@ -85,4 +88,30 @@ func onError(res *colly.Response, e error) {
 
 func onScraped(res *colly.Response) {
 
+}
+
+func createTagsFile(path string, name string) (*os.File, error) {
+	outFilePath := filepath.Join(path, name+".txt")
+
+	file, err := os.Create(outFilePath)
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
+}
+
+func parseTags(tagsLoc map[string]string, reqTagTypes flags.TagsType, container *colly.HTMLElement) ([]string, error) {
+	var extractedTags []string
+
+	for _, tagToDownload := range reqTagTypes {
+		foundTags := container.ChildTexts(tagsLoc[tagToDownload])
+		extractedTags = append(extractedTags, foundTags...)
+	}
+
+	if len(extractedTags) == 0 {
+		return nil, errors.New("no tags found")
+	}
+
+	return extractedTags, nil
 }

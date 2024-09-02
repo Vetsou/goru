@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Virees/goru/flags"
-	"github.com/Virees/goru/scraper"
+	"github.com/Vetsou/goru/flags"
+	"github.com/Vetsou/goru/scraper"
 	"github.com/gocolly/colly/v2"
 )
 
