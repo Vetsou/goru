@@ -1,4 +1,4 @@
-module github.com/Virees/goru
+module github.com/Vetsou/goru
 
 go 1.21.4
 
